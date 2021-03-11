@@ -6,6 +6,11 @@ import (
   "encoding/binary"
 )
 
+var sampleRate int = 44100
+var bitsPerSample int = 8
+var channelCount int = 1
+var formatType int = 1 // 1 is PCM 1 byte int
+
 // Convert int to byte array padding with n bytes
 func U32LittleEndianInt(number int) []byte {
   b := make([]byte, 4)
@@ -26,14 +31,9 @@ func WavFileHeader(dataSize int) []byte {
   
   formatMarker := []byte("fmt ")
   formatLength := 16 // TODO: what should this value actually be? 4 byte int
-  formatType := 1 // 1 is PCM 1 byte int
   
-  channelCount := 1 // should be 2 byte integer 1 byte int
-  sampleRate := 44100 // Sample Rate = Number of Samples per second 4 byte int
-  
-  bitsPerSample := 8 // this technically comes after both k and q in the header 1 byte int
   k := (bitsPerSample * sampleRate * channelCount) / 8 // Not sure what this is -> (Sample Rate * BitsPerSample * Channels) / 8. 4 byte int
-  q := bitsPerSample * channelCount // also not sure what this is 1 byte
+  q := (bitsPerSample * channelCount) / 8 // also not sure what this is 1 byte
 
   dataMarker := []byte("data")
 
@@ -66,23 +66,32 @@ func WavFileHeader(dataSize int) []byte {
   return resp
 }
 
+func BinaryStr(bytes []byte) []byte {
+  resp := make([]byte, 0)
+  for _, b := range bytes {
+    bin := fmt.Sprintf("%b", b)
+    resp = append(resp, []byte(bin)...)
+  }
+  return resp
+}
+
 // convery binary data to wav audio
 // TODO: currently just returning dummy audio
 func BinaryStringToWav() []byte {
-  bin := make([]byte, 0)
-  for i := 0; i < 10000; i++ {
-    bytes := make([]byte, 8)
-    b := 0
-    if i % 2 == 0 {
-      b = 255
+  resp := make([]byte, 0)
+  bin := BinaryStr([]byte("hello world"))
+  for a := 0; a < 1000000; a++ {
+    for _, b := range bin {
+      c := 0
+      if(b == 49) {
+        c = 255
+      } 
+      for i := 0; i < 8; i++ {
+        resp = append(resp, byte(c))
+      }
     }
-    for j := 0; j < 8; j++ {
-      bytes[j] = byte(b) 
-    }
-    bin = append(bin, bytes...)
   }
-  
-  return bin
+  return resp
 }
 
 func BinaryToWav(path string) {
