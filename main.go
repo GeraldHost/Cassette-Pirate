@@ -9,12 +9,14 @@ import (
 type config struct {
   binary string
   outfile string
+  listen bool
 }
 
 func parseFlags() *config {
 	c := &config{}
 	flag.StringVar(&c.binary, "b", "", "The binary file to convert to wav audio")
   flag.StringVar(&c.outfile, "o", "", "The output wav file")
+  flag.BoolVar(&c.listen, "l", false, "listen for audio") 
 	flag.Parse()
 
 	return c
@@ -34,6 +36,10 @@ func main() {
   header()
 
   config := parseFlags()
+
+  if config.listen {
+    cp.ListenForInput()
+  }
   
   if len(config.binary) > 0 {
     if len(config.outfile) <= 0 {
@@ -42,5 +48,4 @@ func main() {
     }
     cp.BinaryToWav(config.binary, config.outfile)
   }
-
 }
