@@ -1,8 +1,10 @@
 package cassettepirate
 
 import (
-  "fmt"
-  "io/ioutil"
+	"bufio"
+	"fmt"
+	"io/ioutil"
+	"os"
 )
 
 // First 4 bytes of RIFF header
@@ -72,36 +74,51 @@ func WavFileHeader(dataSize int) []byte {
 }
 
 // convery binary data to wav audio
-// TODO: currently just returning dummy audio
-func BinaryStringToWav() []byte {
+func BinaryStringToWav(bytes []byte) []byte {
   resp := make([]byte, 0)
-  bin := BinaryStr("hello world")
-  for a := 0; a < 1000000; a++ {
-    for _, b := range bin {
-      c := 0
-      if(b == 49) {
-        c = 255
-      } 
-      for i := 0; i < 8; i++ {
-        resp = append(resp, byte(c))
-      }
+  binStr := BinaryStr(bytes)
+  for _, b := range binStr {
+    c := 0
+    if(b == 49) {
+      c = 255
+    } 
+    for i := 0; i < 8; i++ {
+      resp = append(resp, byte(c))
     }
   }
   return resp
 }
 
-func BinaryToWav(path string) {
-  bin := BinaryStringToWav()
-  header := WavFileHeader(len(bin))
-
-  bin = append(header, bin...)
-
-  err := ioutil.WriteFile("test.wav", bin, 0644)
+func BinaryToWav(path, outputFilePath string) {
+  fmt.Println("[*] Converting binary file to wav")
+  // read file bytes
+  file, err := os.Open(path)
   if err != nil {
-    fmt.Println("failed to write wav file")
+    fmt.Printf("[!] failed to open file %s\n", path)
+  }
+  defer file.Close()
+  reader := bufio.NewScanner(file)
+  
+  // set up data section
+  data := make([]byte, 0)
+  
+  // scan the binary file and convert it to a binary string
+  for reader.Scan() {
+    bytes := reader.Bytes()
+    data = append(data, BinaryStringToWav(bytes)...)
+  }
+
+  header := WavFileHeader(len(data))
+  
+  // append header and data sections together
+  bin := append(header, data...)
+
+  err = ioutil.WriteFile(outputFilePath, bin, 0644)
+  if err != nil {
+    fmt.Printf("[!] failed to write wav file %s\n", outputFilePath)
     return
   }
 
-  fmt.Println("binary to wav")
+  fmt.Printf("[*] wav file created: %s\n", outputFilePath)
 }
 

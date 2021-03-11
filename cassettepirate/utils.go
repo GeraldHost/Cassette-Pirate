@@ -19,10 +19,10 @@ func U16LittleEndianInt(number int) []byte {
   return b
 }
 
-// Convert string to binary bytes eg: 010101
-func BinaryStr(str string) []byte {
+// Convert input bytes to binary bytes eg: 010101
+func BinaryStr(bytes []byte) []byte {
   resp := make([]byte, 0)
-  for _, b := range str[:] {
+  for _, b := range bytes {
     bin := fmt.Sprintf("%b", b)
     resp = append(resp, []byte(bin)...)
   }
