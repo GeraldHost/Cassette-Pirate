@@ -4,6 +4,12 @@
 
 Read and write binary files to cassettes tapes
 
+## Requirements
+
+```
+brew install portaudio
+```
+
 # Resources
 
 http://www.topherlee.com/software/pcm-tut-wavformat.html
