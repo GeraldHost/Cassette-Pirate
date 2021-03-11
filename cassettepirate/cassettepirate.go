@@ -3,39 +3,44 @@ package cassettepirate
 import (
   "fmt"
   "io/ioutil"
-  "encoding/binary"
 )
 
+// First 4 bytes of RIFF header
+var magic []byte = []byte("RIFF")
+
+// Sample rate e.g 44.1 samples/s
 var sampleRate int = 44100
+
+// How many bits in each sample
 var bitsPerSample int = 8
+
+// Number of channels, 1 = mono, 2 = stereo
 var channelCount int = 1
-var formatType int = 1 // 1 is PCM 1 byte int
 
-// Convert int to byte array padding with n bytes
-func U32LittleEndianInt(number int) []byte {
-  b := make([]byte, 4)
-  binary.LittleEndian.PutUint32(b[0:], uint32(number))
-  return b
-}
+// PCM = 1, 1 byte int
+var formatType int = 1
 
-func U16LittleEndianInt(number int) []byte {
-  b := make([]byte, 2)
-  binary.LittleEndian.PutUint16(b[0:], uint16(number))
-  return b
-}
+// Static file type
+var fileTypeHeader []byte = []byte("WAVE")
 
+// marks the start of the format section
+var formatMarker []byte = []byte("fmt ")
+
+// Fuck knows what should this value actually be? 4 byte int
+var formatLength int = 16
+
+// Not sure what this is -> (Sample Rate * BitsPerSample * Channels) / 8. 4 byte int
+var k int = (bitsPerSample * sampleRate * channelCount) / 8 
+
+// also not sure what this is 1 byte
+var q int = (bitsPerSample * channelCount) / 8 
+
+// marks the start of the data section
+var dataMarker []byte = []byte("data")
+
+// Create wave file header based on the size of the data
 func WavFileHeader(dataSize int) []byte {
-  magic := []byte("RIFF")
-  fileSize := dataSize + 44 // TODO: we need to calculate this once we know the size of the header? 4 byte int 
-  fileTypeHeader := []byte("WAVE")
-  
-  formatMarker := []byte("fmt ")
-  formatLength := 16 // TODO: what should this value actually be? 4 byte int
-  
-  k := (bitsPerSample * sampleRate * channelCount) / 8 // Not sure what this is -> (Sample Rate * BitsPerSample * Channels) / 8. 4 byte int
-  q := (bitsPerSample * channelCount) / 8 // also not sure what this is 1 byte
-
-  dataMarker := []byte("data")
+  fileSize := dataSize + 44 
 
   parts := []interface{}{
     magic,
@@ -66,20 +71,11 @@ func WavFileHeader(dataSize int) []byte {
   return resp
 }
 
-func BinaryStr(bytes []byte) []byte {
-  resp := make([]byte, 0)
-  for _, b := range bytes {
-    bin := fmt.Sprintf("%b", b)
-    resp = append(resp, []byte(bin)...)
-  }
-  return resp
-}
-
 // convery binary data to wav audio
 // TODO: currently just returning dummy audio
 func BinaryStringToWav() []byte {
   resp := make([]byte, 0)
-  bin := BinaryStr([]byte("hello world"))
+  bin := BinaryStr("hello world")
   for a := 0; a < 1000000; a++ {
     for _, b := range bin {
       c := 0
