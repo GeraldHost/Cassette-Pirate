@@ -1,4 +1,4 @@
-![pirate-cassette-logo](https://i.imgur.com/bwaZ3hf.png)
+<img src="https://i.imgur.com/bwaZ3hf.png" width="150px" />
 
 # Cassette Pirate
 Read and write binary files to cassettes tapes
