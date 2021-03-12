@@ -16,6 +16,9 @@ var sampleRate int = 44100
 // How many bits in each sample
 var bitsPerSample int = 8
 
+// The actual size of binary bit
+var effectiveBitsPerSample int = bitsPerSample * 20
+
 // Number of channels, 1 = mono, 2 = stereo
 var channelCount int = 1
 
@@ -82,7 +85,7 @@ func BinaryStringToWav(bytes []byte) []byte {
     if(b == 49) {
       c = 255
     } 
-    for i := 0; i < 8; i++ {
+    for i := 0; i < effectiveBitsPerSample; i++ {
       resp = append(resp, byte(c))
     }
   }
