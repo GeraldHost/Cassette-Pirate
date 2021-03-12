@@ -20,8 +20,8 @@ func check(err error) {
 }
 
 func ListenForInput() {
-  nSamples := 4
-  framesPerBuffer := make([]byte, nSamples * effectiveBitsPerSample)
+  //nSamples := 4
+  framesPerBuffer := make([]byte, effectiveBitsPerSample)
   portaudio.Initialize()
   stream, err := portaudio.OpenDefaultStream(
     channelCount, 
@@ -77,6 +77,7 @@ func ParseInput(input []byte) []byte {
   for i := 0; i < len(input); i += effectiveBitsPerSample {
     sample := input[i:i+effectiveBitsPerSample]
     amplitude := averageAmplitude(sample)
+    fmt.Println(amplitude)
     bit := amplitudeToBit(amplitude)
     if bit != -1 {
       bits = append(bits, byte(bit))

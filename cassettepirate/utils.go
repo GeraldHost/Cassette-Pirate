@@ -20,9 +20,9 @@ func averageAmplitude(sample []byte) int {
 // amplitudes of value 245-255 are 1 bit
 // eveything else gets ignored so we return -1
 func amplitudeToBit(amplitude int) int {
-  if amplitude >= 0 && amplitude <= 10 {
+  if amplitude < 128 {
     return 0
-  } else if amplitude >= 245 && amplitude <= 255 {
+  } else if amplitude > 128 {
     return 1
   } else {
     return -1
@@ -47,7 +47,7 @@ func U16LittleEndianInt(number int) []byte {
 func BinaryStr(bytes []byte) []byte {
   resp := make([]byte, 0)
   for _, b := range bytes {
-    bin := fmt.Sprintf("%b", b)
+    bin := fmt.Sprintf("%08b", b)
     resp = append(resp, []byte(bin)...)
   }
   return resp

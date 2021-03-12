@@ -1,10 +1,8 @@
 package cassettepirate
 
 import (
-	"bufio"
 	"fmt"
 	"io/ioutil"
-	"os"
 )
 
 // First 4 bytes of RIFF header
@@ -17,7 +15,7 @@ var sampleRate int = 44100
 var bitsPerSample int = 8
 
 // The actual size of binary bit
-var effectiveBitsPerSample int = bitsPerSample * 20
+var effectiveBitsPerSample int = bitsPerSample * 1000
 
 // Number of channels, 1 = mono, 2 = stereo
 var channelCount int = 1
@@ -95,22 +93,12 @@ func BinaryStringToWav(bytes []byte) []byte {
 func BinaryToWav(path, outputFilePath string) {
   fmt.Println("[*] Converting binary file to wav")
   // read file bytes
-  file, err := os.Open(path)
+  data, err := ioutil.ReadFile(path)
   if err != nil {
     fmt.Printf("[!] failed to open file %s\n", path)
   }
-  defer file.Close()
-  reader := bufio.NewScanner(file)
-  
-  // set up data section
-  data := make([]byte, 0)
-  
-  // scan the binary file and convert it to a binary string
-  for reader.Scan() {
-    bytes := reader.Bytes()
-    data = append(data, BinaryStringToWav(bytes)...)
-  }
 
+  data = BinaryStringToWav(data)
   header := WavFileHeader(len(data))
   
   // append header and data sections together
