@@ -10,6 +10,12 @@ Read and write binary files to cassettes tapes
 brew install portaudio
 ```
 
+## Todo
+
+This currently just about works, tested with a really small file. The effective bit size is massive at the moment. 1 bit is 100ms currently which means you can't really store anything sizable. But it should be possible to make the bit size much much smaller... I imagine 😂
+
+Also for some reason it seems to add an empty 8 bytes at the start sometimes when converting the file back from audio to binary. Not sure why it does this so need to figure that out too. 🤷‍♀️
+
 # Resources
 
 - http://www.topherlee.com/software/pcm-tut-wavformat.html
