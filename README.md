@@ -16,6 +16,9 @@ This currently just about works, tested with a really small file. The effective 
 
 Also for some reason it seems to add an empty 8 bytes at the start sometimes when converting the file back from audio to binary. Not sure why it does this so need to figure that out too. 🤷‍♀️
 
+Figured out that sometimes when listening it gets the wrong bit, or more often it gets a number of wrong bits which shifts all the values and ultimatley fucks everything up
+I think a possible solution is to add an audible delimetter at the start of the recording? The other possibility is the listen to the recording multiple times and patch the broken bits
+
 # Resources
 
 - http://www.topherlee.com/software/pcm-tut-wavformat.html
