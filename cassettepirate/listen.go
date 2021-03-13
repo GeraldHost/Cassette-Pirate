@@ -7,10 +7,13 @@ import (
   "strings"
   "fmt"
   "syscall"
+  "regexp"
   "github.com/gordonklaus/portaudio"
 )
 
 const terminalClearLine = "\r\x1b[2K"
+
+var re = regexp.MustCompile("[01]+0{1}1{8}")
 
 func check(err error) {
   if err != nil {
@@ -19,9 +22,15 @@ func check(err error) {
   }
 }
 
+// convert bits we get from listening the audio to binary string
+func BitsToBinStr(bits []byte) string {
+  binStr := strings.Trim(strings.Replace(fmt.Sprint(bits), " ", "", -1), "[]")
+  return re.ReplaceAllString(binStr, "")
+}
+
 func ListenForInput() {
-  //nSamples := 4
-  framesPerBuffer := make([]byte, effectiveBitsPerSample)
+  nSamples := 1
+  framesPerBuffer := make([]byte, nSamples * effectiveBitsPerSample)
   portaudio.Initialize()
   stream, err := portaudio.OpenDefaultStream(
     channelCount, 
@@ -55,9 +64,9 @@ func ListenForInput() {
     }
   }
   
-  binStr := strings.Trim(strings.Replace(fmt.Sprint(bits), " ", "", -1), "[]")
+  binStr := BitsToBinStr(bits)
   bytes := BinaryStrAsByteSlice([]byte(binStr))
-  
+ 
   outputFilePath := "output.bin"
   err = ioutil.WriteFile(outputFilePath, bytes, 0644)
   if err != nil {

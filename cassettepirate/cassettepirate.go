@@ -15,7 +15,7 @@ var sampleRate int = 44100
 var bitsPerSample int = 8
 
 // The actual size of binary bit
-var effectiveBitsPerSample int = bitsPerSample * 1000
+var effectiveBitsPerSample int = bitsPerSample * 10
 
 // Number of channels, 1 = mono, 2 = stereo
 var channelCount int = 1
@@ -90,6 +90,22 @@ func BinaryStringToWav(bytes []byte) []byte {
   return resp
 }
 
+// Delimiter is 00000000 11111111
+func WavFileDelimiter() []byte {
+  nBytes := 2
+  bits := make([]byte, 0)
+  for i := 0; i < nBytes; i++ {
+    c := 0
+    if(i == 1) {
+      c = 255
+    } 
+    for j := 0; j < 8*effectiveBitsPerSample; j++ {
+      bits = append(bits, byte(c))
+    }
+  }
+  return bits 
+}
+
 func BinaryToWav(path, outputFilePath string) {
   fmt.Println("[*] Converting binary file to wav")
   // read file bytes
@@ -98,10 +114,12 @@ func BinaryToWav(path, outputFilePath string) {
     fmt.Printf("[!] failed to open file %s\n", path)
   }
 
+  delimiter := WavFileDelimiter()
   data = BinaryStringToWav(data)
   header := WavFileHeader(len(data))
-  
+
   // append header and data sections together
+  data = append(delimiter, data...)
   bin := append(header, data...)
 
   err = ioutil.WriteFile(outputFilePath, bin, 0644)
