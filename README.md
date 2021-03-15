@@ -14,9 +14,7 @@ brew install portaudio
 
 This currently just about works, tested with a really small file. The effective bit size is massive at the moment. 1 bit is 100ms currently which means you can't really store anything sizable. But it should be possible to make the bit size much much smaller... I imagine 😂
 
-Also for some reason it seems to add an empty 8 bytes at the start sometimes when converting the file back from audio to binary. Not sure why it does this so need to figure that out too. 🤷‍♀️
-
-Figured out that sometimes when listening it gets the wrong bit, or more often it gets a number of wrong bits which shifts all the values and ultimatley fucks everything up
+Figured out that sometimes when listening it gets the wrong bit, or more often it gets a number of wrong bits which shifts all the values and ultimatley messes everything up
 I think a possible solution is to add an audible delimetter at the start of the recording? The other possibility is the listen to the recording multiple times and patch the broken bits
 
 # Resources
