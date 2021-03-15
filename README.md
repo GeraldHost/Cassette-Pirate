@@ -28,3 +28,5 @@ I think a possible solution is to add an audible delimetter at the start of the 
 - https://en.wikipedia.org/wiki/Tape_recorder
 - https://wavefilegem.com/how_wave_files_work.html
 - https://www.dropbox.com/sh/0ctq0ecoyvmyzxf/AABf6t-Td2fXHrS61RznsyA4a?dl=0
+
+#### note: this is not a serious project. This is just for fun and for research.
